@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -18,12 +19,17 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+}
+
+.main {
+  background-image: url("../public/assets/img/background.svg");
+  background-position: 0;
+}
+
+.device-bg {
+  background-image: url("../public/assets/img/background-blobs.svg");
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 @layer utilities {

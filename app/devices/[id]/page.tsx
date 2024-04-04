@@ -12,7 +12,8 @@ export default function DeviceControl({
     const [value, setValue] = useState([60]);
 
     return (
-        <div>
+        <div className="device-bg py-24 px-10 lg:px-80 md:px-40 sm:px-12 min-h-dvh">
+        <div className="bg-gray-800/50 rounded-lg py-20 px-10 min-w-96 text-slate-50">
             <div className="flex flex-row gap-3">
                 <Image src="/assets/icons/bulb.svg" width={50} height={50} alt="bulb" />
                 <div>
@@ -25,7 +26,7 @@ export default function DeviceControl({
             </div>
             <div className="my-10">
                 <div>
-                    <p className="font-semibold text-xl">Brightness</p>
+                    <p className="font-semibold text-xl text-slate-200">Brightness</p>
                     <p>{value}</p>
                     <div className="py-10 max-w-2xl flex items-center gap-5">
                         <Image width={20} height={20} src="/assets/icons/brightness.svg" alt="light dimm"/>
@@ -70,6 +71,6 @@ export default function DeviceControl({
                 </div>
             </div>
         </div>
-        
+        </div>
     )
 }
