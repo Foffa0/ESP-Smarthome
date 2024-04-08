@@ -37,6 +37,17 @@ body {
   background-repeat: no-repeat;
 }
 
+.popup_tabs,
+.colorpicker,
+.color-picker-panel {
+  background-color: rgb(15 23 42) !important;
+}
+
+.input_rgba input {
+  background-color: rgb(28, 37, 59) !important;
+  color: whitesmoke !important;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

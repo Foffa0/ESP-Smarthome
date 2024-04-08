@@ -21,7 +21,11 @@ function Point(props: { color?: string; checked?: boolean }) {
         }}
       />
     );
-  }
+}
+
+function mapNumRange(props: {num: number, inMin: number, inMax: number, outMin: number, outMax: number}) {
+  return (Math.round(((props.num - props.inMin) * (props.outMax - props.outMin)) / (props.inMax - props.inMin) + props.outMin));
+}
   
 
 export default function DeviceControl({ 
@@ -30,11 +34,11 @@ export default function DeviceControl({
     params: {id: string}
 }) {
     const [value, setValue] = useState([60]);
-    const [mode, setMode] = useState<number>(1);
+    const [mode, setMode] = useState<number>(0);
     const [hsva, setHsva] = useState({ h: 214, s: 43, v: 90, a: 1 });
 
     return (
-        <div className="device-bg py-24 px-10 lg:px-80 md:px-40 sm:px-12 min-h-dvh">
+        <div className="device-bg lg:py-24 px-10 lg:px-80 md:px-40 sm:px-12 min-h-dvh">
         <div className="bg-gray-800/50 rounded-xl py-20 px-10 min-w-96 text-slate-50">
             <div className="flex flex-row gap-3">
                 <Image src="/assets/icons/bulb.svg" width={50} height={50} alt="bulb" />
@@ -49,7 +53,7 @@ export default function DeviceControl({
             <div className="my-10">
                 <div>
                         <p className="font-semibold text-xl text-slate-200 inline-block">Brightness</p>
-                        <p className="inline-block float-right">{value}%</p>
+                        <p className="inline-block float-right">{mapNumRange({num: value[0], inMin: 0, inMax: 255, outMin: 0, outMax: 100})}%</p>
                     <div className="py-10 max-w-2xl flex items-center gap-5">
                         <Image width={20} height={20} src="/assets/icons/brightness.svg" alt="light dimm"/>
                         <Range 
@@ -92,9 +96,9 @@ export default function DeviceControl({
                     <p className="font-semibold text-xl text-slate-200">Mode</p>
                     <div className="mt-4">
                         <ul className="list-none h-16">
-                            <li className={clsx("rounded-full bg-slate-900 float-left px-5 py-2 mx-1 cursor-pointer", { "bg-slate-500": mode === 0 })} onClick={() => {setMode(0)}}>Color</li>
-                            <li className={clsx("rounded-full bg-slate-900 float-left px-5 py-2 mx-1 cursor-pointer", { "bg-slate-500": mode === 1 })} onClick={() => {setMode(1)}}>Gradient</li>
-                            <li className={clsx("rounded-full bg-slate-900 float-left px-5 py-2 mx-1 cursor-pointer", { "bg-slate-500": mode === 2 })} onClick={() => {setMode(2)}}>Effect</li>
+                            <li className={clsx("rounded-full float-left px-5 py-2 mx-1 cursor-pointer", { "bg-slate-500": mode === 0, "bg-slate-900": mode != 0 })} onClick={() => {setMode(0)}}>Color</li>
+                            <li className={clsx("rounded-full float-left px-5 py-2 mx-1 cursor-pointer", { "bg-slate-500": mode === 1, "bg-slate-900": mode != 1})} onClick={() => {setMode(1)}}>Gradient</li>
+                            <li className={clsx("rounded-full float-left px-5 py-2 mx-1 cursor-pointer", { "bg-slate-500": mode === 2, "bg-slate-900": mode != 3 })} onClick={() => {setMode(2)}}>Effect</li>
                         </ul>
                         {mode === 0 ? (
                             <div className="flex flex-col items-center">
@@ -105,9 +109,10 @@ export default function DeviceControl({
                                     rectProps={{
                                         children: <Point />,
                                         style: {
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            margin: "20px 5px 20px 5px"
                                         },
                                     }}
                                     onChange={(hsvColor) => {
@@ -118,8 +123,8 @@ export default function DeviceControl({
                                 <div style={{ width: '100%', height: 34, marginTop: 20, background: hsvaToHex(hsva) }}></div>
                             </div>
                         ) : mode === 1 ? (
-                            <div>
-                                <ReactGPicker value='linear-gradient(90deg, rgb(251, 171, 126) 8.00%, rgb(247, 206, 104) 92.00%)' gradient showGradientAngle={true} showGradientPosition={false} showGradientMode={false} solid={false} showAlpha={false} defaultColors={['linear-gradient(270deg, rgb(251, 171, 126) 8.00%, rgb(247, 206, 104) 92.00%)',]} onChange={() => {}} />;
+                            <div className="flex justify-center">
+                                <ReactGPicker value='linear-gradient(90deg, rgb(255, 0, 0) 0.00%, rgb(0, 255, 0) 100.00%)' gradient showGradientAngle={false} showGradientPosition={false} showGradientMode={false} solid={false} showAlpha={false} defaultColors={['linear-gradient(270deg, rgb(251, 171, 126) 8.00%, rgb(247, 206, 104) 92.00%)',]} onChange={() => {}} />
                             </div>
                         ) : (
                             <div>
