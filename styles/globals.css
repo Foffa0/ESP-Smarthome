@@ -22,6 +22,11 @@ body {
 }
 
 .main {
+  position: fixed;
+  width: 100vw;
+  height: 100dvh;
+  top: -10%;
+  left: 0;
   background-image: url("../public/assets/img/background.svg");
   background-position: 0;
 }

@@ -1,11 +1,12 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const Navbar = () => {
     return (
-        <div className="w-100 h-16 content-center bg-white px-10 border-b-2">
-            <Image className="absolute" src="/assets/img/logo.jpg" width={60} height={60} alt="logo" />
-            <h1 className="h-100 font-bold text-2xl text-black text-center self-center py-5">Smarthome</h1>
-        </div>
+        <nav className="w-100 h-16 sticky top-0 content-center bg-black px-10 lg:px-80 sm:px-12 border-b-2 border-slate-950 z-50">
+            <Link href="/"><Image className="absolute" src="/assets/img/logo.png" width={60} height={60} alt="logo" /></Link>
+            <h1 className="h-100 font-bold text-2xl text-slate-100 text-center self-center py-5">Smarthome</h1>
+        </nav>
     )
 }
 

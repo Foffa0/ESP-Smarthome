@@ -6,7 +6,8 @@ import Scenes from "@components/Scenes"
 
 export default function Home() {
   return (
-    <div className="main py-24 px-10 lg:px-80 md:px-40 sm:px-12">
+    <div className="py-24 px-10 max-w-7xl">
+      <div className="main"></div>
         <section>
           <Devices />
         </section>
