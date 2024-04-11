@@ -32,6 +32,7 @@ body {
 }
 
 .device-bg {
+  width: 100%;
   background-image: url("../public/assets/img/background-blobs.svg");
   background-position: center;
   background-repeat: no-repeat;
@@ -46,7 +47,13 @@ body {
 .input_rgba input {
   background-color: rgb(28, 37, 59) !important;
   color: whitesmoke !important;
+  box-shadow: 0px 0px 0px 2px #20242b !important;
 }
+
+.active-shadow {
+  box-shadow: 0 0px 15px 3px rgba(255, 255, 255, 0.1), 0 4px 6px -4px rgba(250, 250, 250, 0.1) !important;
+}
+
 
 @layer utilities {
   .text-balance {
