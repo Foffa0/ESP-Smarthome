@@ -1,9 +1,10 @@
 import React from "react";
 import Image from 'next/image';
 
-const Card = (props: {name: string, type: number}) => {
+const Card = (props: {name: string, type: number, online: boolean}) => {
     return (
         <div className="flex flex-col justify-between p-3 lg:p-5 rounded-xl bg-slate-300/10 w-32 h-32 lg:w-40 lg:h-40 drop-shadow-sm backdrop-blur-md">
+            
             <div className="w-8 lg:w-10">
             {props.type === 0 ? (
                 <Image 
@@ -35,8 +36,21 @@ const Card = (props: {name: string, type: number}) => {
             )}
             </div>
             <div>
-                <h5 className="text-md font-medium">{props.name}</h5>
-                <p className="text-slate-600">100%</p>
+                {props.online === true ? (
+                    <div>
+                        <Image width={15} height={15} src="/assets/icons/wifi.svg" className="absolute top-5 right-5" alt="wifi"/>
+                        <h5 className="text-md font-medium">{props.name}</h5>
+                        <p className="text-slate-600">100%</p>
+                    </div>
+                ) : (
+                    <div>
+                        <Image width={15} height={15} src="/assets/icons/disconnected.svg" className="absolute top-5 right-5" alt="no wifi"/>
+                        <h5 className="text-md font-medium text-slate-500">{props.name}</h5>
+                        <p className="text-slate-600">---%</p>
+                    </div>
+                )
+                }
+                
             </div>
         </div>
     )
