@@ -2,7 +2,7 @@
 import "@styles/globals.css";
 import Image from "next/image";
 import { Range, getTrackBackground } from 'react-range';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Wheel from '@uiw/react-color-wheel';
 import { hsvaToHex, getContrastingColor } from '@uiw/color-convert';
 import Swatch from '@uiw/react-color-swatch';
@@ -10,6 +10,8 @@ import ReactGPicker from 'react-gcolor-picker';
 import clsx from 'clsx';
 import EffectCard from "@components/EffectCard";
 import Link from "next/link";
+import { IStatus } from "@db/data";
+import useSWR from 'swr'
 
 function Point(props: { color?: string; checked?: boolean }) {
     if (!props.checked) return null;
@@ -28,18 +30,28 @@ function Point(props: { color?: string; checked?: boolean }) {
 function mapNumRange(props: {num: number, inMin: number, inMax: number, outMin: number, outMax: number}) {
   return (Math.round(((props.num - props.inMin) * (props.outMax - props.outMin)) / (props.inMax - props.inMin) + props.outMin));
 }
-  
+
+const fetcher = (url:string) => fetch(url).then(r => r.json())
 
 export default function DeviceControl({ 
     params
 }: {
     params: {id: string}
 }) {
+
+    //let device = await fetch("http://localhost:3000/api/device?id=" + params.id)
+    /*.then(response => console.log(response.status)) // output the status and return response
+    .then(body => device = body)*/
+    //console.log(device);
+    const { data, error, isLoading } = useSWR(`http://localhost:3000/api/device?id=${params.id}`, fetcher)
+    
     const [value, setValue] = useState([60]);
     const [mode, setMode] = useState<number>(0);
     const [hsva, setHsva] = useState({ h: 214, s: 43, v: 90, a: 1 });
     const [effect, setEffect] = useState(0);
-
+    if (error) return <div>failed to load</div>
+    if (isLoading) return <div>loading...</div>
+    console.log(data);
     return (
         <div className="device-bg flex justify-center lg:py-24 px-5 lg:px-80 md:px-40 sm:px-12 min-h-dvh">
             <div className="bg-gray-800/50 rounded-xl pb-20 px-5 md:px-10 min-w-80 max-w-lg text-slate-50">
@@ -49,7 +61,7 @@ export default function DeviceControl({
                 <div className="flex flex-row gap-3">
                     <Image src="/assets/icons/bulb.svg" width={50} height={50} alt="bulb" />
                     <div>
-                        <h2 className="font-bold text-xl">LED Strip Bett</h2>
+                        <h2 className="font-bold text-xl">{data.device.name}</h2>
                         <div className="flex flex-row gap-1.5">
                             <p className="text-slate-500">Online</p>
                             <Image width={15} height={15} src="/assets/icons/wifi.svg" alt="wifi"/>
@@ -58,7 +70,7 @@ export default function DeviceControl({
                 </div>
                 <div className="my-10">
                     <div>
-                            <p className="font-medium text-md text-slate-200 inline-block">Brightness</p>
+                            <p className="font-medium text-md text-slate-200 inline-block">Brightnes</p>
                             <p className="inline-block float-right">{mapNumRange({num: value[0], inMin: 0, inMax: 255, outMin: 0, outMax: 100})}%</p>
                         <div className="py-10 max-w-2xl flex items-center gap-5">
                             <Image width={20} height={20} src="/assets/icons/brightness.svg" alt="light dimm"/>
