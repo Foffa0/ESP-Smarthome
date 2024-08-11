@@ -6,8 +6,7 @@ export const GET = async (request: Request)=> {
     const id = searchParams.get('id');
     const devices = await getDevices();
     console.log(id);
-    const device = devices.find(device => device.id == Number(id));
-    console.log(device);
+    const device = devices.find(d => d.id == Number(id));
     return Response.json({ device })
     
     /*return new Response('Success!', {
