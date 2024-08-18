@@ -42,7 +42,7 @@ export default function DeviceControl({
     
     const [brightness, setBrightness] = useState([60]);
     const [mode, setMode] = useState<number>(0);
-    const [rgba, setRgba] = useState({ r: 255, g: 255, b: 0, a: 1});
+    const [rgba, setRgba] = useState({ r: 200, g: 0, b: 0, a: 255});
     const [gradient, setGradient] = useState("linear-gradient(90deg, rgb(255, 0, 0) 0.00%, rgb(0, 255, 0) 100.00%)");
     const [effect, setEffect] = useState(0);
     const [effectSpeed, setEffectSpeed] = useState([1]);
@@ -51,9 +51,26 @@ export default function DeviceControl({
     const [mouseDown, setMouseDown] = useState(false);
 
     useEffect(() => {
-        if (data == undefined) return;
-        if (data.device.brightness != brightness) setBrightness([data.device.brightness]);
-        if (data.device.mode != mode) setMode(data.device.mode);
+        if (!data) return;
+        if (data.device.mode != mode) {
+            setMode(data.device.mode);
+        }
+        if (data.device.mode == 0 ) {
+            let col = {r: 0, g: 0, b: 0};
+            data.device.parameter != rgbaToRgb(rgba);
+            let regex = new RegExp(/\,+/, 'g');
+            let matches : any[] = Array.from(data.device.parameter.matchAll(regex));
+            col.r = data.device.parameter.substring(0, matches[0].index);
+            col.g = data.device.parameter.substring(matches[0].index + 1, matches[1].index);
+            col.b = data.device.parameter.substring(matches[1].index + 1, data.device.parameter.length);
+            if (col != rgbaToRgb(rgba)) {
+                setRgba({r: col.r, g: col.g, b: col.b, a: 255});
+                setValueChanged(true);
+            }
+        }
+        if (data.device.brightness != brightness) {
+            setBrightness([data.device.brightness]);
+        }
         if (data.device.mode == 1) {
             let gradientString = "linear-gradient(90deg";
             let regex = new RegExp(/\|+/, 'g');
@@ -74,8 +91,9 @@ export default function DeviceControl({
     }, [data]);
 
     useEffect(() => {
+        if (valueChanged == false) return;
         setValueChanged(false);
-        if (data == undefined) return;
+        if (!data) return;
         
         let parameter = "";
         switch (mode) {
@@ -116,7 +134,7 @@ export default function DeviceControl({
                 data.device.status = 0;
             }
         })
-    }, [valueChanged, mode, effect, gradient]);
+    }, [valueChanged]);
 
     if (error) return <div className="text-white">failed to load</div>
     if (isLoading) return <div className="text-white">loading...</div>
@@ -195,9 +213,9 @@ export default function DeviceControl({
                         <p className="font-medium text-md text-slate-200">Mode</p>
                         <div className="mt-4">
                             <ul className="list-none h-16">
-                                <li className={clsx("rounded-full float-left px-5 py-2 mx-1 cursor-pointer", { "bg-slate-500": mode === 0, "bg-slate-900": mode != 0 })} onClick={() => {setMode(0)}}>Color</li>
-                                <li className={clsx("rounded-full float-left px-5 py-2 mx-1 cursor-pointer", { "bg-slate-500": mode === 1, "bg-slate-900": mode != 1})} onClick={() => {setMode(1)}}>Gradient</li>
-                                <li className={clsx("rounded-full float-left px-5 py-2 mx-1 cursor-pointer", { "bg-slate-500": mode === 2, "bg-slate-900": mode != 2 })} onClick={() => {setMode(2)}}>Effect</li>
+                                <li className={clsx("rounded-full float-left px-5 py-2 mx-1 cursor-pointer", { "bg-slate-500": mode === 0, "bg-slate-900": mode != 0 })} onClick={() => {setMode(0); setValueChanged(true)}}>Color</li>
+                                <li className={clsx("rounded-full float-left px-5 py-2 mx-1 cursor-pointer", { "bg-slate-500": mode === 1, "bg-slate-900": mode != 1})} onClick={() => {setMode(1); setValueChanged(true)}}>Gradient</li>
+                                <li className={clsx("rounded-full float-left px-5 py-2 mx-1 cursor-pointer", { "bg-slate-500": mode === 2, "bg-slate-900": mode != 2 })} onClick={() => {setMode(2); setValueChanged(true)}}>Effect</li>
                             </ul>
                             {mode === 0 ? (
                                 <div className="flex flex-col items-center">
@@ -225,7 +243,7 @@ export default function DeviceControl({
                                 </div>
                             ) : mode === 1 ? (
                                 <div className="flex justify-center">
-                                    <ReactGPicker value={gradient} gradient showGradientAngle={false} showGradientPosition={false} showGradientMode={false} solid={false} showAlpha={false} defaultColors={[]} onChange={(value) => {setGradient(value)}}/>
+                                    <ReactGPicker value={gradient} gradient showGradientAngle={false} showGradientPosition={false} showGradientMode={false} solid={false} showAlpha={false} defaultColors={[]} onChange={(value) => {setGradient(value); setValueChanged(true)}}/>
                                 </div>
                             ) : (
                                 <div>
@@ -269,7 +287,7 @@ export default function DeviceControl({
                                     <div className="flex flex-row flex-wrap justify-center gap-3">
                                         {/* <EffectCard name="No Effect" active={effect === 0} imageUrl="/assets/icons/circleCrossed.svg" onClick={() => {setEffect(0)}}/> */}
                                         { data.device.effects.map((e: string, index: number) => (                                  
-                                            <EffectCard name={e} active={effect === index} onClick={() => {setEffect(index)}}/>
+                                            <EffectCard name={e} active={effect === index} onClick={() => {setEffect(index); setValueChanged(true)}}/>
                                         ))}
                                     </div>
                                 </div>
