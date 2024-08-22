@@ -1,7 +1,8 @@
 import React from "react";
 import Image from 'next/image';
+import { KeyedMutator } from "swr";
 
-const Card = (props: {name: string, type: number, brightness: number, online: number}) => {
+const Card = (props: {name: string, type: number, editMode: boolean, brightness: number, online: number, id: number, mutate: KeyedMutator<any>}) => {
     return (
         <div className="flex flex-col justify-between p-3 lg:p-5 rounded-xl bg-slate-300/10 w-32 h-32 lg:w-40 lg:h-40 drop-shadow-sm backdrop-blur-md">
             
@@ -36,6 +37,16 @@ const Card = (props: {name: string, type: number, brightness: number, online: nu
             )}
             </div>
             <div>
+            {props.editMode ? (
+                <div>
+                    <Image width={15} height={15} src="/assets/icons/wifi.svg" className="absolute top-5 right-5" alt="wifi"/>
+                    <h5 className="text-md font-medium">{props.name}</h5>
+                    <button className='w-full mt-4 self-end text-red-600 bg-zinc-900 hover:bg-zinc-800 focus:ring-4 focus:outline-none font-small rounded-lg text-sm px-5 py-1 text-center' onClick={() => fetch('/api/device/deleteDevice', {method: 'POST', body: JSON.stringify({id: props.id})}).then(() => props.mutate())}>
+                        Delete
+                    </button>
+                </div>
+            ):(
+                <div>
                 {props.online === 1 ? (
                     <div>
                         <Image width={15} height={15} src="/assets/icons/wifi.svg" className="absolute top-5 right-5" alt="wifi"/>
@@ -50,7 +61,8 @@ const Card = (props: {name: string, type: number, brightness: number, online: nu
                     </div>
                 )
                 }
-                
+                </div>
+            )}
             </div>
         </div>
     )

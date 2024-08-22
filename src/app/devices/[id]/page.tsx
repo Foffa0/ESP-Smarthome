@@ -147,7 +147,14 @@ export default function DeviceControl({
                     <Link href={"/"}><Image src={"/assets/icons/back.svg"} width={20} height={20} alt="back"/></Link>
                 </div>
                 <div className="flex flex-row gap-3">
-                    <Image src="/assets/icons/bulb.svg" width={50} height={50} alt="bulb" />
+                    { data.device.type == 0 ? (
+                        <Image src="/assets/icons/led-strip.svg" width={50} height={50} alt="led strip" />
+                    ) : data.device.type == 1 ? (
+                        <Image src="/assets/icons/bulb.svg" width={50} height={50} alt="bulb" />
+                    ) : (
+                        <Image src="/assets/icons/matrix.svg" width={50} height={50} alt="led matrix" />
+                    )
+                    }
                     <div>
                         <h2 className="font-bold text-xl">{data.device.name}</h2>
                         
@@ -214,7 +221,9 @@ export default function DeviceControl({
                         <div className="mt-4">
                             <ul className="list-none h-16">
                                 <li className={clsx("rounded-full float-left px-5 py-2 mx-1 cursor-pointer", { "bg-slate-500": mode === 0, "bg-slate-900": mode != 0 })} onClick={() => {setMode(0); setValueChanged(true)}}>Color</li>
-                                <li className={clsx("rounded-full float-left px-5 py-2 mx-1 cursor-pointer", { "bg-slate-500": mode === 1, "bg-slate-900": mode != 1})} onClick={() => {setMode(1); setValueChanged(true)}}>Gradient</li>
+                                { data.device.type != 2 ? (
+                                    <li className={clsx("rounded-full float-left px-5 py-2 mx-1 cursor-pointer", { "bg-slate-500": mode === 1, "bg-slate-900": mode != 1})} onClick={() => {setMode(1); setValueChanged(true)}}>Gradient</li>
+                                ) : ""}
                                 <li className={clsx("rounded-full float-left px-5 py-2 mx-1 cursor-pointer", { "bg-slate-500": mode === 2, "bg-slate-900": mode != 2 })} onClick={() => {setMode(2); setValueChanged(true)}}>Effect</li>
                             </ul>
                             {mode === 0 ? (
@@ -241,7 +250,7 @@ export default function DeviceControl({
 
                                     {/*<div style={{ width: '100%', height: 34, marginTop: 20, background: hsvaToHex(rgb) }}></div> */}
                                 </div>
-                            ) : mode === 1 ? (
+                            ) : mode === 1 && data.device.type != 2 ? (
                                 <div className="flex justify-center">
                                     <ReactGPicker value={gradient} gradient showGradientAngle={false} showGradientPosition={false} showGradientMode={false} solid={false} showAlpha={false} defaultColors={[]} onChange={(value) => {setGradient(value); setValueChanged(true)}}/>
                                 </div>
