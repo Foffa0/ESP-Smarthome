@@ -52,7 +52,8 @@ const SceneForm = (props:{swrMutate: KeyedMutator<any>}) => {
             method: "POST",
             body: JSON.stringify(body),
         }).then(() => {
-            setColFadeTime(0);
+            setColFadeTime(1);
+            setDimFadeTime(1);
             setSceneName("");
             setDialog(false);
             props.swrMutate();

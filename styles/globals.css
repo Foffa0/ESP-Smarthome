@@ -54,6 +54,19 @@ body {
   box-shadow: 0 0px 15px 3px rgba(255, 255, 255, 0.1), 0 4px 6px -4px rgba(250, 250, 250, 0.1) !important;
 }
 
+.skeleton {
+  animation: skeleton-loading 1s linear infinite alternate;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}
+
 
 @layer utilities {
   .text-balance {
