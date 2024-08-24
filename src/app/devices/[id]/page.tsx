@@ -12,6 +12,7 @@ import EffectCard from "@components/EffectCard";
 import Link from "next/link";
 import { IDevice } from "@db/data";
 import useSWR from 'swr'
+import { Effect } from "@prisma/client";
 
 function Point(props: { color?: string; checked?: boolean }) {
     if (!props.checked) return null;
@@ -295,8 +296,8 @@ export default function DeviceControl({
                                     </div>
                                     <div className="flex flex-row flex-wrap justify-center gap-3">
                                         {/* <EffectCard name="No Effect" active={effect === 0} imageUrl="/assets/icons/circleCrossed.svg" onClick={() => {setEffect(0)}}/> */}
-                                        { data.device.effects.map((e: string, index: number) => (                                  
-                                            <EffectCard name={e} active={effect === index} onClick={() => {setEffect(index); setValueChanged(true)}}/>
+                                        { data.device.effects.map((e: Effect, index: number) => (                                  
+                                            <EffectCard name={e.name} active={effect === index} onClick={() => {setEffect(index); setValueChanged(true)}}/>
                                         ))}
                                     </div>
                                 </div>

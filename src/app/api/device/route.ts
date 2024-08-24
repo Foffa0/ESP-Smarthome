@@ -1,15 +1,21 @@
-import { getDevices } from "@db/data";
+import prisma from "@lib/db";
 
 // Listening for new Devices
 export const GET = async (request: Request)=> {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
-    const devices = await getDevices();
-    console.log(id);
-    const device = devices.find(d => d.id == Number(id));
-    return Response.json({ device })
-    
-    /*return new Response('Success!', {
-        status: 200,
-    })*/
+    const device = await prisma.device.findUnique({
+        where: {
+            id: Number(id),
+        },
+        include: {
+            effects: {
+                select: {
+                    name: true,
+                },
+            },
+        },
+    });
+    console.log(device);
+    return Response.json({ device: device })
 }

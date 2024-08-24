@@ -1,4 +1,5 @@
-import { getDevices, getScenes, IDevice, setDevices } from "@db/data";
+import { IDevice } from "@db/data";
+import prisma from "@lib/db";
 
 interface ISceneData {
     ip: string,
@@ -12,24 +13,39 @@ interface IDeviceFadeRate extends IDevice {
 
 export const POST = async (request: Request) => {
   const data = await request.json();
-  const scene = (await getScenes()).filter((s) => s.id == Number(data.id))[0];
+  const scene = await prisma.scene.findUnique({
+    where: {
+      id: data.id,
+    },
+    include: {
+      devices: true,
+    }
+  });
 
-  const devices = await getDevices();
+  if (scene == null) return;
 
   const urls : ISceneData[] = [];
 
-  scene.devices.forEach(device => {
+  for (let i = 0; i < scene.devices.length; i++) {
     // To avoid sending old device settings such as the ip stored in a scene, 
     // we get the up to date device from db and just change the relevant data
-    const dev = devices.filter((d) => d.id == Number(device.id))[0] as IDeviceFadeRate;
-    dev.brightness = device.brightness;
-    dev.mode = device.mode;
-    dev.parameter = device.parameter;
+    const dev = await prisma.device.findUnique({
+      where: {
+        id: scene.devices[i].deviceId,
+      }
+    }) as IDeviceFadeRate;
+    
+    if (dev == null) return;
+    dev.brightness = scene.devices[i].brightness;
+    dev.mode = scene.devices[i].mode;
+    dev.parameter = scene.devices[i].parameter;
     dev.fadeRate = scene.fadeTime;
     dev.dimmerFadeRate = scene.dimmerFadeTime;
+    dev.effects = [];
+    console.log(dev)
 
     urls.push({ip: dev.ip + "/data", data: dev});
-  });
+  }
 
   const fetchPromises = urls.map(url => fetch(url.ip, {method: 'POST', body: JSON.stringify(url.data)}));
 
@@ -45,7 +61,18 @@ export const POST = async (request: Request) => {
     console.log(error)
   });
 
-  await setDevices(scene.devices);
+  scene.devices.forEach(async d => {
+    await prisma.device.update({
+      where: {
+        id: d.deviceId,
+      },
+      data: {
+        brightness: d.brightness,
+        mode: d.mode,
+        parameter: d.parameter
+      }
+    });
+  });
 
   return new Response('Success!', {
     status: 200,

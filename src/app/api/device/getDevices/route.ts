@@ -1,10 +1,14 @@
-import { getDevices } from "@db/data";
+import prisma from "@lib/db";
 
 export const GET = async (request: Request)=> {
-    const devices = await getDevices();
+    const devices = await prisma.device.findMany({
+        include: {
+            effects: {
+                select: {
+                    name: true,
+                },
+            },
+        },
+    });
     return Response.json({ devices: devices })
-    
-    /*return new Response('Success!', {
-        status: 200,
-    })*/
 }

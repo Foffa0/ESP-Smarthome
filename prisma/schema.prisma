@@ -1,0 +1,49 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./data.db"//env("DATABASE_URL")
+}
+
+model Device {
+  id Int @id
+  type Int
+  name String
+  brightness Int @default(255)
+  mode Int @default(0)
+  parameter String @default("255,255,255")
+  ip String
+  status Int
+  effects Effect[]
+  deviceDatas DeviceData[]
+}
+
+model Effect {
+  id Int @id @default(autoincrement())
+  name String
+  device Device @relation(fields: [deviceId], references: [id])
+  deviceId Int
+}
+model Scene {
+  id Int @id @default(autoincrement())
+  name String
+  fadeTime Int @default(0)
+  dimmerFadeTime Int @default(0)
+  devices DeviceData[]
+}
+
+model DeviceData {
+  id Int @id @default(autoincrement())
+  device Device @relation(fields: [deviceId], references: [id])
+  deviceId Int
+  scene Scene @relation(fields: [sceneId], references: [id])
+  sceneId Int
+  brightness Int @default(255)
+  mode Int @default(0)
+  parameter String @default("255,255,255")
+}
