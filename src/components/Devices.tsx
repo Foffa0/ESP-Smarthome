@@ -11,11 +11,11 @@ function mapNumRange(props: {num: number, inMin: number, inMax: number, outMin: 
     return (Math.round(((props.num - props.inMin) * (props.outMax - props.outMin)) / (props.inMax - props.inMin) + props.outMin));
 }
 
-const fetcher = (url:string) => fetch(url, { cache: 'no-store' }).then(r => r.json())
+const fetcher = (url:string) => fetch(url, { cache: 'no-store', method: 'POST' }).then(r => r.json())
 
 const Devices = () => { 
     const [editMode, setEditMode] = useState(false);
-    const { data, error, isLoading, mutate } = useSWR("http://localhost:3000/api/device/getDevices", fetcher);
+    const { data, error, isLoading, mutate } = useSWR("http://192.168.1.10:7006/api/device/getDevices", fetcher);
 
     if (error) return <div className="text-white">failed to load</div>
     if (isLoading) return (

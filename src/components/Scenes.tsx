@@ -7,11 +7,11 @@ import { useState } from 'react';
 import useSWR from 'swr';
 import SkeletonSceneCard from './SkeletonSceneCard';
 
-const fetcher = (url:string) => fetch(url, { cache: 'no-store' }).then(r => r.json())
+const fetcher = (url:string) => fetch(url, { cache: 'no-store', method: 'POST' }).then(r => r.json())
 
 const Scenes = () => {
   const [editMode, setEditMode] = useState(false);
-  const { data, error, isLoading, mutate } = useSWR("http://localhost:3000/api/scene", fetcher);
+  const { data, error, isLoading, mutate } = useSWR("http://192.168.1.10:7006/api/scene", fetcher);
 
   if (error) return <div className="text-white">failed to load</div>
   if (isLoading) return (

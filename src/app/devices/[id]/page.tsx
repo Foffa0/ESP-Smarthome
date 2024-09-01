@@ -39,7 +39,7 @@ export default function DeviceControl({
 }: {
     params: {id: string}
 }) {
-    const { data, error, isLoading } = useSWR(`http://localhost:3000/api/device?id=${params.id}`, fetcher)
+    const { data, error, isLoading } = useSWR(`http://192.168.1.10:7006/api/device?id=${params.id}`, fetcher)
     
     const [brightness, setBrightness] = useState([60]);
     const [mode, setMode] = useState<number>(0);
@@ -129,7 +129,7 @@ export default function DeviceControl({
             ip: data.device.ip,
             effects: data.device.effects
         }
-        fetch('http://localhost:3000/api/device/setData', {method: "POST", body: JSON.stringify(body)})
+        fetch('http://192.168.1.10:7006/api/device/setData', {method: "POST", body: JSON.stringify(body)})
         .then((response) => {
             if (response.status == 408) {
                 data.device.status = 0;

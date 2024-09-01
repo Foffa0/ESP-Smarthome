@@ -2,7 +2,7 @@ import { IDevice } from "@db/data";
 import prisma from "@lib/db";
 
 export const POST = async (request: Request)=> {
-    const data: IDevice = await request.json()
+    const data: IDevice = await request.json();
     data.effects = [];
 
     try {

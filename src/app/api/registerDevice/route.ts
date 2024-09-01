@@ -1,18 +1,17 @@
-import { addDevice, getDevices, IDevice } from "@db/data";
+import { IDevice } from "@db/data";
 import prisma from "@lib/db";
 
 // Listening for new Devices
 export const POST = async (request: Request) => {
-    const data : IDevice = await request.json()
+    const data : IDevice = await request.json();
 
     const device = await prisma.device.findUnique({
         where: {
             id: data.id,
         }
     });
-
     if (device == null) {
-        await prisma.device.create({
+        const dev = await prisma.device.create({
             data: {
                 id: data.id,
                 type: data.type,
@@ -32,15 +31,15 @@ export const POST = async (request: Request) => {
             }
         });
     } else {
-        await prisma.device.update({
+        const dev = await prisma.device.update({
             where: { id: device.id },
             data: {
-                ip: device.ip,
-                name: device.name,
+                ip: data.ip,
+                name: data.name,
                 status: 1,
-                parameter: device.parameter,
-                mode: device.mode,
-                brightness: device.brightness
+                parameter: data.parameter,
+                mode: data.mode,
+                brightness: data.brightness
             }
         });
     }
