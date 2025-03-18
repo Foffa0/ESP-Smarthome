@@ -10,7 +10,6 @@ export interface IDevice {
     id: number,
     type: number,
     name: string,
-    ip: string,
     effects: string[],
     status: number,
     mode: Mode,

@@ -16,6 +16,5 @@ export const GET = async (request: Request)=> {
             },
         },
     });
-    console.log(device);
     return Response.json({ device: device })
 }

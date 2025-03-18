@@ -63,7 +63,7 @@ const SceneForm = (props:{swrMutate: KeyedMutator<any>}) => {
         <div>
         { showDialog ?
             (
-            <div className="flex flex-col p-3 lg:p-5 rounded-xl bg-slate-300/10 w-full h-60 lg:w-64 lg:h-80 drop-shadow-sm backdrop-blur-md md:w-60">
+            <div className="flex flex-col p-3 lg:p-5 rounded-xl bg-slate-300/10 w-full h-72 lg:w-64 lg:h-80 drop-shadow-sm backdrop-blur-md md:w-60">
                 <form method="POST" action="/api/scene/setScene" onSubmit={submitForm}>
                     <div className="">
                         <label className="text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">Name</label>

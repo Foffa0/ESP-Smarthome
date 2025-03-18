@@ -18,7 +18,6 @@ model Device {
   brightness Int @default(255)
   mode Int @default(0)
   parameter String @default("255,255,255")
-  ip String
   status Int
   effects Effect[]
   deviceDatas DeviceData[]

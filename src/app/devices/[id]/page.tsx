@@ -40,6 +40,7 @@ export default function DeviceControl({
     params: {id: string}
 }) {
     const { data, error, isLoading } = useSWR(`http://192.168.1.10:7006/api/device?id=${params.id}`, fetcher)
+    const [isExtractingData, setIsExtractingData] = useState(true);
     
     const [brightness, setBrightness] = useState([60]);
     const [mode, setMode] = useState<number>(0);
@@ -53,6 +54,7 @@ export default function DeviceControl({
 
     useEffect(() => {
         if (!data) return;
+        setIsExtractingData(true);
         if (data.device.mode != mode) {
             setMode(data.device.mode);
         }
@@ -89,6 +91,7 @@ export default function DeviceControl({
             gradientString += ", rgb(" + temp.substring(0, temp.lastIndexOf(',')) + ") " + temp.substring(temp.lastIndexOf(',') + 1, temp.length) + ".00%)";
             setGradient(gradientString);
         }
+        setIsExtractingData(false);
     }, [data]);
 
     useEffect(() => {
@@ -105,7 +108,6 @@ export default function DeviceControl({
             
             case 1:
                 let c = gradient.replace(/\s/g, "").split("rgb");
-                console.log(gradient)
                 c.forEach((element, index) => {
                     if (index != 0) {
                         parameter += element.substring(1, element.indexOf(')'));
@@ -126,7 +128,6 @@ export default function DeviceControl({
             id: Number(params.id),
             type: data.device.type,
             name: data.device.name,
-            ip: data.device.ip,
             effects: data.device.effects
         }
         fetch('http://192.168.1.10:7006/api/device/setData', {method: "POST", body: JSON.stringify(body)})
@@ -138,7 +139,7 @@ export default function DeviceControl({
     }, [valueChanged]);
 
     if (error) return <div className="text-white">failed to load</div>
-    if (isLoading) return <div className="text-white">loading...</div>
+    if (isLoading || isExtractingData) return <div className="text-white">loading...</div>
     
 
     return (

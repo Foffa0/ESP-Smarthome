@@ -1,4 +1,7 @@
 import prisma from "@lib/db";
+import mqttClient from "@lib/mqtt";
+
+//console.log(mqttClient.connected);
 
 export const GET = async (request: Request)=> {
     const devices = await prisma.device.findMany({
@@ -14,7 +17,6 @@ export const GET = async (request: Request)=> {
 }
 
 export const POST = async (request: Request)=> {
-    
     const devices = await prisma.device.findMany({
         include: {
             effects: {
@@ -24,7 +26,6 @@ export const POST = async (request: Request)=> {
             },
         },
     });
-    console.log("api: get devices: " + devices);
     
     return Response.json({ devices: devices })
 }

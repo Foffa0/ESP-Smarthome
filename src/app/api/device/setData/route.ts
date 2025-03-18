@@ -1,26 +1,20 @@
 import { IDevice } from "@db/data";
 import prisma from "@lib/db";
+import mqttClient from "@lib/mqtt";
 
 export const POST = async (request: Request)=> {
     const data: IDevice = await request.json();
     data.effects = [];
 
-    try {
-        await fetch(`${data.ip}/data`, {method: 'POST', body: JSON.stringify(data)})
-    } catch {
-        await prisma.device.update({
-            where: { id: data.id },
-            data: {
-                status: 0,
-            }
-        });
-        return new Response('Error', {status: 408});
-    }
+    mqttClient.publish(`/device/${data.id}/set`, JSON.stringify(data), { qos: 1, retain: false }, (error, packet) => {
+        if (error) {
+          console.error(error)
+        }
+    });
 
     await prisma.device.update({
         where: { id: data.id },
         data: {
-            status: 1,
             parameter: data.parameter,
             mode: data.mode,
             brightness: data.brightness
